@@ -1,0 +1,24 @@
+services:
+  mytools:
+    container_name: mytools
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ipc: host
+    ports:
+      - "8888:8888"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    volumes:
+      - ./workspace/:/workspace
+    environment:
+      - JUPYTER_TOKEN=token123
+    networks:
+      - decide-network
+
+networks:
+  decide-network:
+    name: decide-network

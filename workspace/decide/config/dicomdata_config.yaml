@@ -1,0 +1,48 @@
+
+## Author: Amal Joseph Varghese
+## Configuration for DICOM metadata collection using DICOMDatabase class.
+
+## The modalities you want to consider, comment it off to consider all available modalities
+modalities:
+  - CT
+  - RTSTRUCT
+  - RTDOSE
+
+## Metadata Tags that are available for all the dicom files
+additional_tags:
+  # Patients: []
+  Studies:
+    - StudyDate
+    - StudyDescription
+  Series:
+    - SeriesDate
+    - SeriesDescription
+    - InstanceCreationDate
+    - InstanceCreationTime
+  # Instances: []
+
+## Modality specific Metdata Tags. If its a Tag that is not directly found under dicom header (eg. nested tags), 
+## define a staticmethod under the DICOMNestedTags class in decide/dicomdecider/dicom_metadata.py and 
+## mention that using !callable in this config file.
+modality_specific:
+  RTDOSE:
+    Series:
+      - FrameOfReferenceUID
+      - DoseUnits
+      - TissueHeterogeneityCorrection
+    Instances:
+      - DoseSummationType
+      - !callable get_rtdose_referenced_sop_instance_uid
+  CT:
+    Series:
+      - FrameOfReferenceUID
+    Instances:
+      - InstanceNumber
+  RTSTRUCT:
+    Series:
+      - !callable get_rtstruct_referenced_series_uid
+      - !callable get_rtstruct_frame_of_reference_uid
+      - !callable get_rtstruct_structureset_roi_names
+  RTPLAN:
+    Instances:
+      - !callable get_rtplan_referenced_sop_instance_uid

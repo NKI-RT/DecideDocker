@@ -1,0 +1,115 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "decide"
+version = "0.1.0"
+description = "Tools for the DECIDE project"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Amal Joseph Varghese", email = "a.joseph@nki.nl" }]
+keywords = ["medical imaging", "DECIDE", "image processing"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+
+dependencies = [
+    "matplotlib>=3.10.5",
+    "numpy>=2.2.6",
+    "pandas>=2.3.2",
+    "pydicom>=3.0.1",
+    "python-dotenv>=1.1.1",
+    "pyyaml>=6.0.2",
+    "scikit-image>=0.25.2",
+    "scipy>=1.15.3",
+    "seaborn>=0.13.2",
+    "SimpleITK>=2.5.2",
+    "xnat>=0.5.3",
+]
+
+[project.optional-dependencies]
+dev = ["uv>=0.1.0", "pytest>=8.0.0", "black>=24.0.0", "ruff>=0.5.0", "mypy>=1.10.0"]
+
+# --- Setuptools configuration for src/  ---
+[tool.setuptools]
+# Map the top-level package root to "src"
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["decide"] # finds `decide` and any subpackages
+
+
+# ======================
+
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "A",   # https://docs.astral.sh/ruff/rules/#flake8-builtins-a
+    "D",   # https://docs.astral.sh/ruff/rules/#pydocstyle-d
+    "E",   # https://docs.astral.sh/ruff/rules/#pycodestyle-e-w
+    "ERA", # https://docs.astral.sh/ruff/rules/#eradicate-era
+    "F",   # https://docs.astral.sh/ruff/rules/#pyflakes-f
+    "FBT", # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
+    "I",   # https://docs.astral.sh/ruff/rules/#isort-i
+    "ICN", # https://docs.astral.sh/ruff/rules/#flake8-import-conventions-icn
+    "ISC", # https://docs.astral.sh/ruff/rules/#flake8-implicit-str-concat-isc
+    "N",   # https://docs.astral.sh/ruff/rules/#pep8-naming-n
+    "Q",   # https://docs.astral.sh/ruff/rules/#flake8-quotes-q
+    "TID", # https://docs.astral.sh/ruff/rules/#flake8-tidy-imports-tid
+    "W",   # https://docs.astral.sh/ruff/rules/#warning-w
+    "YTT", # https://docs.astral.sh/ruff/rules/#flake8-2020-ytt
+]
+ignore = [
+    # Skip type annotation for self, *args, **kwargs
+    "ANN101",
+    "ANN002",
+    "ANN003",
+    # Allow non-abstract empty methods in abstract base classes
+    "B027",
+    # Skip first line of docstring should be in imperative mood
+    "D401",
+    # Allow module level import not at top of file
+    "E402",
+    # Allow boolean positional values in function calls, like `dict.get(... True)`
+    "FBT003",
+    # Ignore ISC conflict
+    "ISC001",
+    # Ignore checks for possible passwords
+    "S105",
+    "S106",
+    "S107",
+    # Ignore complexity
+    "C901",
+    "PLR0911",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+    # disabling SSL certificate checks
+    "S501",
+    # Allow camelcase imports to be aliased as lowercase (e.g., SimpleITK as sitk)
+    "N813",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["decide"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports
+"tests/**/*" = ["PLR2004", "S101", "TID252"]
+
+[tool.ruff.lint.pydocstyle]
+# Use pep257-style docstrings.
+convention = "pep257"
