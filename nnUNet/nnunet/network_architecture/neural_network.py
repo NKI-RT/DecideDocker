@@ -134,7 +134,7 @@ class SegmentationNetwork(NeuralNetwork):
         assert len(x.shape) == 4, "data must have shape (c,x,y,z)"
 
         if mixed_precision:
-            context = lambda: autocast('cuda')
+            context = lambda: autocast()
         else:
             context = no_op
 
@@ -223,7 +223,7 @@ class SegmentationNetwork(NeuralNetwork):
         assert len(x.shape) == 3, "data must have shape (c,x,y)"
 
         if mixed_precision:
-            context = lambda: autocast('cuda')
+            context = autocast()
         else:
             context = no_op
 

@@ -2,6 +2,7 @@
 
 import logging
 import os
+import shutil
 import zipfile
 from pathlib import Path
 from typing import List, Tuple, Union
@@ -116,14 +117,14 @@ def get_component_count(image: Union[sitk.Image, str, Path]) -> Tuple[int, List[
 
 def move_files_to_directory(files: List[Union[str, Path]], dest_dir: Union[str, Path]) -> None:
     """
-    Move specified files to a destination directory using Path.rename.
+    Move specified files to a destination directory using shutil.move.
 
     :param files: List of file paths to move.
     :param dest_dir: Destination directory path.
     :raises FileExistsError: If the destination directory is not empty.
     :raises FileNotFoundError: If a file does not exist.
     :raises ValueError: If a path is not a file.
-    :raises OSError: If the rename operation fails.
+    :raises OSError: If the move operation fails.
     """
     dest_path = Path(dest_dir)
     dest_path.mkdir(parents=True, exist_ok=True)
@@ -141,6 +142,38 @@ def move_files_to_directory(files: List[Union[str, Path]], dest_dir: Union[str, 
 
         target_path = dest_path / file_path.name
         try:
-            file_path.rename(target_path)
+            shutil.move(str(file_path), str(target_path))
         except OSError as e:
             raise OSError(f"Failed to move {file_path} to {target_path}: {e}")
+
+
+def copy_files_to_directory(files: List[Union[str, Path]], dest_dir: Union[str, Path]) -> None:
+    """
+    Copy specified files to a destination directory using shutil.copy2.
+
+    :param files: List of file paths to copy.
+    :param dest_dir: Destination directory path.
+    :raises FileExistsError: If the destination directory is not empty.
+    :raises FileNotFoundError: If a file does not exist.
+    :raises ValueError: If a path is not a file.
+    :raises OSError: If the copy operation fails.
+    """
+    dest_path = Path(dest_dir)
+    dest_path.mkdir(parents=True, exist_ok=True)
+
+    # Raise if destination directory is not empty
+    if any(dest_path.iterdir()):
+        raise FileExistsError(f"Destination directory '{dest_path}' is not empty.")
+
+    for file in files:
+        file_path = Path(file)
+        if not file_path.exists():
+            raise FileNotFoundError(f"File not found: {file_path}")
+        if not file_path.is_file():
+            raise ValueError(f"Not a file: {file_path}")
+
+        target_path = dest_path / file_path.name
+        try:
+            shutil.copy2(file_path, target_path)
+        except OSError as e:
+            raise OSError(f"Failed to copy {file_path} to {target_path}: {e}")

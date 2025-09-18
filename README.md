@@ -29,15 +29,17 @@ sudo docker compose up -d
 docker-compose up -d
 ```
 
+> 🔄 Please wait a few minutes after starting the container.
+> The container performs runtime installations and builds (e.g., Plastimatch, Python packages, nnUNet patch) via the `startup.sh` script. This may take a few minutes depending on your system.
+
 - Access JupyterLab at `http://<your_ip_address>:8888`
 - Login using the configured token (default: `token123`)
 
-> **Note:**  
-> `docker compose up -d` builds the image (if not already present) and runs the container in detached mode (background).  
-> To stop the container, use:
-> ```sh
-> docker compose down
-> ```
+To stop the container, use:
+
+```sh
+docker compose down
+```
 
 ---
 
@@ -48,6 +50,7 @@ DecideDocker/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── .env
+├── startup.sh
 ├── workspace/
 │   ├── decide/
 │   │   ├── config/
@@ -69,7 +72,7 @@ The Dockerfile uses a **multi-stage build**:
 
 ### Stage 1: JupyterLab Setup
 - Base: `ubuntu:22.04`
-- Installs latest JupyterLab
+- Installs latest JupyterLab and extensions
 
 ### Stage 2: DECIDE Environment
 - Base: TotalSegmentator image
@@ -93,7 +96,17 @@ Defines container behavior:
 - Mounts `workspace/` directory for live sync between host and container
 
 ---
+## 📜 startup.sh
 
+The `startup.sh` script is executed when the container starts. It performs the following tasks:
+
+- Builds and installs **Plastimatch** from source
+- Installs required **Python packages** (e.g., PyRadiomics, Platipy)
+- Applies a patch to **nnUNet** for compatibility
+- Installs **DECIDE tools** if present in `/workspace/decide`
+- Fixes specific package versions (e.g., `numpy`, `pydicom`)
+- Registers the **Jupyter kernel**
+- Configures and launches **JupyterLab** on port `8888`
 ## 🔐 .env File
 
 Stores environment variables:
@@ -137,13 +150,13 @@ PyTorch 2.6 changed the default `weights_only` argument in `torch.load` to `True
 
 2. Patch `model_restore.py`:
 
-```python
-from torch.serialization import safe_globals
-import numpy
+    ```python
+    from torch.serialization import safe_globals
+    import numpy
 
-with safe_globals([numpy.dtype]):
-    all_params = [torch.load(i, map_location=torch.device('cpu'), weights_only=False) for i in all_best_model_files]
-```
+    with safe_globals([numpy.dtype]):
+        all_params = [torch.load(i, map_location=torch.device('cpu'), weights_only=False) for i in all_best_model_files]
+    ```
 
 ---
 
@@ -154,7 +167,7 @@ with safe_globals([numpy.dtype]):
 - Single Docker Compose managing XNAT, JupyterLab, and tools
 - Adding new containers required editing XNAT's Docker Compose
 
-![ARGOS Architecture](/images/argos_data_preprocessing.png)
+    ![ARGOS Architecture](/images/argos_data_preprocessing.png)
 ---
 
 ### DECIDE
@@ -162,4 +175,13 @@ with safe_globals([numpy.dtype]):
 - Separation of data containers and tool containers
 - No modification needed to data containers when adding/removing tools
 
-![DECIDE Architecture](/images/decide_data_preprocessing.png)
+    ![DECIDE Architecture](/images/decide_data_preprocessing.png)
+
+## Test Data Attribution
+
+This repository includes data derived from the NSCLC-Radiomics dataset available via the Imaging Data Commons (IDC).
+
+Original dataset citation:
+The Cancer Imaging Archive. https://www.cancerimagingarchive.net/collection/nsclc-radiomics/
+
+License: CC BY-NC 3.0 — Non-commercial use only.

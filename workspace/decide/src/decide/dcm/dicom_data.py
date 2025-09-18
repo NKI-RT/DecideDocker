@@ -8,6 +8,7 @@ import pydicom
 import yaml
 from tqdm import tqdm
 
+from decide.dcm.dicom_classes import Patient
 from decide.dcm.dicom_metadata import DICOMNestedTags
 from decide.paths import CONFIG_DIR
 from decide.utils.logger import setup_logger
@@ -278,105 +279,4 @@ class DICOMData:
         patient_data = self.data.get("Patients", {}).get(patientid)
         if patient_data:
             return Patient(patient_data, patientid)
-        return None
-
-
-class Patient:
-    """Represents a DICOM patient."""
-
-    def __init__(self, data: dict, patientid: str):
-        """DICOM Patient."""
-        self.data = data
-        self.patientid = patientid
-
-    def get_modality(self, modality: str) -> List:
-        """Get a specified modality.
-
-        :param str modality: DICOMModality
-        :return List: List of the specified modality objects with their metadata
-        """
-        results = []
-        for studyuid, study_data in self.data.get("Studies", {}).items():
-            study = Study(study_data, studyuid, self)
-            for seriesuid, series_data in study_data.get("Series", {}).items():
-                if series_data.get("Modality") == modality:
-                    if modality == "CT":
-                        results.append(CT(series_data, seriesuid, study))
-                    elif modality == "RTSTRUCT":
-                        results.append(RTSTRUCT(series_data, seriesuid, study))
-                    else:
-                        results.append(Series(series_data, seriesuid, study))
-        return results
-
-
-class Study:
-    """Represents a DICOM study."""
-
-    def __init__(self, data: dict, studyuid: str, patient: Patient):
-        """DICOM Study.
-
-        :param dict data: DICOM Metadata
-        :param str studyuid: DICOM StudyInstanceUID
-        :param Patient patient: The patient object
-        """
-        self.data = data
-        self.studyuid = studyuid
-        self.patient = patient
-
-
-class Series:
-    """Base class for a DICOM series."""
-
-    def __init__(self, data: dict, seriesinstanceuid: str, study: Study):
-        """DICOM Series.
-
-        :param dict data: DICOM Metadata
-        :param str seriesinstanceuid: DICOM SeriesInstanceUID
-        :param Study study: The study object
-        """
-        self.data = data
-        self.seriesinstanceuid = seriesinstanceuid
-        self.study = study
-        self.patient = study.patient
-
-    def get_files(self):
-        """Return the Files in this series."""
-        files = []
-        for _, instance_data in self.data.get("Instances", {}).items():
-            files.append(instance_data.get("FilePath", {}))
-        return files
-
-
-class CT(Series):
-    """CT modality series."""
-
-    def __init__(self, data: dict, seriesinstanceuid: str, study: Study):
-        """DICOM CT.
-
-        :param dict data: DICOM Metadata
-        :param str seriesinstanceuid: DICOM SeriesInstanceUID
-        :param Study study: The study object
-        """
-        super().__init__(data, seriesinstanceuid, study)
-
-
-class RTSTRUCT(Series):
-    """RTSTRUCT modality series with CT reference finder."""
-
-    def __init__(self, data: dict, seriesinstanceuid: str, study: Study):
-        """DICOM RTSTRUCT.
-
-        :param dict data: DICOM Metadata
-        :param str seriesinstanceuid: DICOM SeriesInstanceUID
-        :param Study study: The study object
-        """
-        super().__init__(data, seriesinstanceuid, study)
-
-    def get_ct(self):
-        """Find the CT series referenced by this RTSTRUCT."""
-        ref_uid = self.data.get("ReferencedSeriesUID")
-        for studyuid, study_data in self.patient.data.get("Studies", {}).items():
-            for uid, series in study_data.get("Series", {}).items():
-                if uid == ref_uid and series.get("Modality") == "CT":
-                    return CT(series, uid, Study(study_data, studyuid, self.patient))
         return None
