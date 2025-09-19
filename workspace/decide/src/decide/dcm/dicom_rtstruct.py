@@ -81,6 +81,7 @@ class RTStruct:
                 else:
                     self.referenced_image = sitk.ReadImage(str(path))
                     self.logger.info(f"Loaded referenced image from {path}")
+            self._load_metadata()
         except Exception as e:
             self.logger.error(f"Failed to set reference image: {e}")
             raise
@@ -312,13 +313,13 @@ class RTStruct:
             self.logger.error(f"Error renaming ROIs: {e}")
             raise
 
-    def validate_roi(self, roi_name: str) -> bool:
-        """Validate whether the contours of the specified ROI are equally spaced along the Z-axis.
+    def validate_roi(self, roi_name: str) -> List:
+        """To checks if the contours of the specified ROI are unequally spaced along the Z-axis.
 
         :param str roi_name: Name of the ROI to validate.
         :raises ValueError: True if Z-values are equally spaced, False otherwise.
         :raises ValueError: If the ROI name is not found or has no contour data.
-        :return bool:
+        :return List: the spacings along z axis.
         """
         if roi_name not in self.roi_dict:
             raise ValueError(f"ROI '{roi_name}' not found in RTSTRUCT.")
@@ -340,9 +341,8 @@ class RTStruct:
             return True  # Not enough data to determine spacing
         z_values_sorted = sorted(z_values)
         spacings = [round(z_values_sorted[i + 1] - z_values_sorted[i], 5) for i in range(len(z_values_sorted) - 1)]
-        spacing_set = set(spacings)
 
-        return len(spacing_set) == 1
+        return spacings
 
     def save_rtstruct(self, output_filepath: Union[str, Path]) -> None:
         """

@@ -10,9 +10,9 @@ This repository contains scripts and configuration files to build and run a Dock
 
 - Clone or copy the `DecideDocker` repository to your working machine (local or cloud).
 - Navigate into the `DecideDocker` directory:
-  ```sh
-  cd DecideDocker
-  ```
+```sh
+cd DecideDocker
+```
 - Configure environment variables (or just set it in docker-compose.yml file):
   - Edit the `.env` file (make sure hidden files are visible in your system).
   - Alternatively, rename `default.env` to `.env`.

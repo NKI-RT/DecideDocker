@@ -23,6 +23,7 @@ class ImageConvertor:
         :return bool: True if conversion is successful, False otherwise.
         """
         logger = logger or setup_logger(level=logging.INFO)
+        logger.info("\n")
 
         output_path = Path(output_file)
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -38,12 +39,15 @@ class ImageConvertor:
 
             if result.returncode != 0:
                 logger.error(f"Image conversion failed with return code {result.returncode}")
+                logger.info("\n\n")
                 return False
             logger.info(f"Image conversion successful. Output saved to: {output_file}")
+            logger.info("\n\n")
             return True
 
         except Exception as e:
             logger.error(f"Exception during image conversion: {str(e)}")
+            logger.info("\n\n")
             return False
 
     @staticmethod
@@ -59,6 +63,7 @@ class ImageConvertor:
         :return bool: True if conversion is successful, False otherwise.
         """
         logger = logger or setup_logger(level=logging.INFO)
+        logger.info("\n")
 
         output_path = Path(output_prefix).parent
         output_path.mkdir(parents=True, exist_ok=True)
@@ -86,13 +91,16 @@ class ImageConvertor:
 
             if result.returncode != 0:
                 logger.error(f"RTSTRUCT conversion failed with return code {result.returncode}")
+                logger.info("\n\n")
                 return False
 
             logger.info(f"RTSTRUCT conversion successful. Output saved with prefix: {output_prefix}")
+            logger.info("\n\n")
             return True
 
         except Exception as e:
             logger.error(f"Exception during RTSTRUCT conversion: {str(e)}")
+            logger.info("\n\n")
             return False
 
     @staticmethod
