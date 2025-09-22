@@ -23,7 +23,7 @@ if __name__ == "__main__":
     # main logger
     my_logger = setup_logger(
         "Prepare Structures",
-        log_file=LOG_DIR / "get_structures_ready.log",
+        log_file=LOG_DIR / "get_nifti.log",
         level="INFO",
     )
     # logger for plastimatch
