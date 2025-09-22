@@ -155,6 +155,8 @@ if __name__ == "__main__":
                                 source_dir=tempdir / "gtvs",
                                 file_type=".nii.gz",
                             )
+                            #Stop with the first RTSTRUCT
+                            break
                         except Exception as e:
                             my_logger.error(f"Encountered Error [{e}] while processing Patient {patient_id}")
             my_logger.info(f"Done for Patinet {patient_id}")

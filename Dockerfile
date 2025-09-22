@@ -27,14 +27,41 @@ ENV JUPYTER_TOKEN=token123
 # System dependencies
 RUN apt-get update && apt-get install -y \
     dcmtk git libinsighttoolkit4.13 \
+    curl cmake g++ libinsighttoolkit4-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Build Plastimatch
+RUN git clone https://gitlab.com/plastimatch/plastimatch.git /opt/plastimatch \
+    && cd /opt/plastimatch && mkdir build && cd build \
+    && cmake .. && make -j$(nproc) && make install \
+    && ldconfig \
+    && apt-get purge -y cmake g++ \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /opt/plastimatch/.git
 
 # Copy JupyterLab from builder
 COPY --from=jupyterlab-builder /usr/local /usr/local
 COPY --from=jupyterlab-builder /opt/jupyterlab /opt/jupyterlab
 
-# Copy nnUNet (still needed at build time)
+# Install uv (fast Python package manager)
+RUN pip install uv
+
+# Install Python dependencies with uv
+RUN uv pip install --system \
+    ipywidgets \
+    git+https://github.com/AIM-Harvard/pyradiomics.git@master \
+    platipy \
+    ipykernel
+
+# Copy nnUNet
 COPY nnUNet/ /opt/nnUNet/
+
+# Patch nnUNet and install with uv
+RUN sed -i 's/"sklearn"/"scikit-learn"/g' /opt/nnUNet/setup.py \
+    && uv pip install --system /opt/nnUNet
+
+# Register Jupyter kernel
+RUN python3 -m ipykernel install --prefix=/usr/local --name "python3" --display-name "Python 3"
 
 # Copy startup script
 COPY startup.sh /usr/local/bin/startup.sh
@@ -46,3 +73,4 @@ RUN mkdir -p /workspace
 
 EXPOSE 8888
 CMD ["/usr/local/bin/startup.sh"]
+

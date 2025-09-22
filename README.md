@@ -30,7 +30,7 @@ docker-compose up -d
 ```
 
 > 🔄 Please wait a few minutes after starting the container.
-> The container performs runtime installations and builds (e.g., Plastimatch, Python packages, nnUNet patch) via the `startup.sh` script. This may take a few minutes depending on your system.
+> The container performs runtime installations and builds via the `startup.sh` script. This may take a few minutes depending on your system.
 
 - Access JupyterLab at `http://<your_ip_address>:8888`
 - Login using the configured token (default: `token123`)
@@ -49,18 +49,25 @@ docker compose down
 DecideDocker/
 ├── Dockerfile
 ├── docker-compose.yml
-├── .env
 ├── startup.sh
+├── .env (default.env)
 ├── workspace/
 │   ├── decide/
 │   │   ├── config/
-│   │   │   └── config_total_segmentator.yaml
+│   │   │   ├── config_total_segmentator.yaml
+│   │   │   └── dicomdata_config.yaml
 │   │   ├── logs/
 │   │   ├── data/
+│   │   |   └── LUNG1-001/
+│   │   |       ├── CT
+│   │   |       ├── RTSTRUCT
+│   │   |       └── NIfTI
 │   │   ├── src/
 │   │   │   └── decide/
 │   │   └── pyproject.toml
 │   └── notebooks/
+│       ├── 001_test_essentials.ipynb
+│       └── 002_get_nifti.ipynb
 └── nnUNet/
 ```
 
