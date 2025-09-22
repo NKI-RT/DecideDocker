@@ -168,7 +168,6 @@ if __name__ == "__main__":
                             )
 
             my_logger.info(f"Done for Patinet {patient_id}")
-            break
         my_logger.info("Disconneting from XNAT")
 
         # Save the missed patients information.
