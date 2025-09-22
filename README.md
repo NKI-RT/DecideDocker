@@ -99,9 +99,11 @@ DecideDocker/
 │   │   ├── src/
 │   │   │   └── decide/
 │   │   └── pyproject.toml
-│   └── notebooks/
-│       ├── 001_test_essentials.ipynb
-│       └── 002_get_nifti.ipynb
+│   ├── notebooks/
+│   │   ├── 001_test_essentials.ipynb
+│   |   └── 002_get_nifti.ipynb
+│   └── scripts/
+│       └── get_nifti.py
 └── nnUNet/
 ```
 
