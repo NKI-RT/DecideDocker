@@ -15,8 +15,8 @@ RUN git clone https://github.com/jupyterlab/jupyterlab.git /opt/jupyterlab \
     && python3 -m pip install . \
     && jupyter lab build
 
-# Add JupyterLab Language Server
-RUN pip install jupyterlab-lsp python-lsp-server[all] \
+# Add JupyterLab Language Server with minimal setup for IntelliSense
+RUN pip install jupyterlab-lsp python-lsp-server \
     && jupyter labextension install @krassowski/jupyterlab-lsp
 
 # ================= STAGE 2: Final Image =================
