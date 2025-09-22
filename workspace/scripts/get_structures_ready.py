@@ -1,33 +1,32 @@
+"""Convert the DICOM CT and RTSTRUCT to NIfTI files and Upload to the XNAT Server."""
+
+import datetime
+import json
+import re
+import tempfile
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+from decide.dcm import DICOMData, ImageConvertor, ImageValidator, RTStruct
+from decide.dcm.image_fixes import interpolate_missing_slices
+from decide.mask import MaskPostProcessor
 from decide.paths import LOG_DIR
 from decide.utils.logger import setup_logger
-from decide.xnat import XNATManager
-from decide.dcm import DICOMData
-from decide.dcm import ImageValidator
-from decide.dcm.image_fixes import interpolate_missing_slices
-from decide.dcm import ImageConvertor
-from decide.dcm import RTStruct
-from decide.mask import MaskPostProcessor
 from decide.utils.utils import move_files_to_directory
-from pathlib import Path
-import tempfile
-import re
-from dotenv import load_dotenv
+from decide.xnat import XNATManager
 
 # Load environment variables from the .env file
 load_dotenv()
 
-# the env variables are:
-# os.environ["XNAT_URL"] = ''
-# os.environ["XNAT_USER"] = ''
-# os.environ["XNAT_PASSWORD"] = ""
-# os.environ["XNAT_PROJECT"] = ''
-
 if __name__ == "__main__":
+    # main logger
     my_logger = setup_logger(
         "Prepare Structures",
         log_file=LOG_DIR / "get_structures_ready.log",
         level="INFO",
     )
+    # logger for plastimatch
     plastimatch_logger = setup_logger(
         "Plastimatch",
         log_file=LOG_DIR / "plastimatch.log",
@@ -35,6 +34,9 @@ if __name__ == "__main__":
         log_to_console=False,
     )
 
+    missed_patients = []
+    # XNAT Manager Object, Automatically configures the credentials from .env file.
+    # It considers only one experiment per patient in XNAT.
     myxnat = XNATManager(load_patients=True, logger=my_logger)
 
     with myxnat.get_connection():
@@ -66,7 +68,7 @@ if __name__ == "__main__":
                         f"Found {rtstruct_count} RTSTRUCTS, will consider only one that has an associated CT"
                     )
 
-                for dicom_rtstruct in rtstruct_list:
+                for rtstruct_num, dicom_rtstruct in enumerate(rtstruct_list):
                     ct = dicom_rtstruct.get_ct()
                     if ct:
                         try:
@@ -112,7 +114,7 @@ if __name__ == "__main__":
                                 rtstruct_path=tempdir / patient_id / "RTSTRUCT",
                                 logger=my_logger,
                             )
-                            # Find only hte GTVs.
+                            # Find only the GTVs.
                             gtv_names = [
                                 name
                                 for name in rtstruct.roi_dict.keys()
@@ -155,10 +157,24 @@ if __name__ == "__main__":
                                 source_dir=tempdir / "gtvs",
                                 file_type=".nii.gz",
                             )
-                            #Stop with the first RTSTRUCT
+                            # Stop with the first RTSTRUCT
                             break
                         except Exception as e:
-                            my_logger.error(f"Encountered Error [{e}] while processing Patient {patient_id}")
+                            my_logger.error(
+                                f"Encountered Error [{e}] while processing Patient {patient_id} RTSTRUCT-{rtstruct_num}"
+                            )
+                            missed_patients.append(
+                                {"PatientID": patient_id, "RTSTRUCT": {rtstruct_num}}
+                            )
+
             my_logger.info(f"Done for Patinet {patient_id}")
+            break
         my_logger.info("Disconneting from XNAT")
+
+        # Save the missed patients information.
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        Path("../data/").mkdir(parents=True, exist_ok=True)
+        with open(f"../data/missed_patients_{timestamp}.json", "w") as f:
+            json.dump(missed_patients, f, indent=2)
+
     my_logger.info("All Done")

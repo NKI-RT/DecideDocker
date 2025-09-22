@@ -32,7 +32,7 @@ def interpolate_missing_slices(input_path: str, output_path: str, logger: loggin
                 array[i] = (array[i - 1].astype(np.float32) + array[i + 1].astype(np.float32)) / 2
                 array[i] = (array[i] > 0.5).astype(np.uint8)  # Convert back to binary mask
                 modified = True
-                logger.info(f"Slice {i} was interpolated.")
+                logger.debug(f"Slice {i} was interpolated.")
 
     if modified:
         logger.info(f"Image was modified. Saving corrected image {input_path}.")

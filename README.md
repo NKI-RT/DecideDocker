@@ -8,38 +8,72 @@ This repository contains scripts and configuration files to build and run a Dock
 
 ### 1. Setup
 
-- Clone or copy the `DecideDocker` repository to your working machine (local or cloud).
-- Navigate into the `DecideDocker` directory:
-```sh
-cd DecideDocker
-```
-- Configure environment variables (or just set it in docker-compose.yml file):
-  - Edit the `.env` file (make sure hidden files are visible in your system).
-  - Alternatively, rename `default.env` to `.env`.
+- **Clone** the repository to your machine:
+  ```sh
+  git clone https://github.com/NKI-RT/DecideDocker.git
+  ```
+- **Navigate** into the directory:
+  ```sh
+  cd DecideDocker
+  ```
+- **Configure environment variables:**
+  - Edit the `workspace/.env` file (make sure hidden files are visible).
+  - Or, rename `default.env` to `.env`.
 
 ### 2. Run the Container
 
-Use one of the following commands depending on your Docker version:
+Use one of the following commands (depending on your Docker version):
 
 ```sh
-docker compose up -d
-# or
 sudo docker compose up -d
-# or (for older versions)
-docker-compose up -d
 ```
-
-> 🔄 Please wait a few minutes after starting the container.
-> The container performs runtime installations and builds via the `startup.sh` script. This may take a few minutes depending on your system.
-
-- Access JupyterLab at `http://<your_ip_address>:8888`
-- Login using the configured token (default: `token123`)
-
-To stop the container, use:
-
 ```sh
-docker compose down
+# or (for older versions)
+sudo docker-compose up -d
 ```
+
+> 🔄 **Note:**  
+> The container will perform runtime installations and builds via the `startup.sh` script. This may take a few minutes.
+
+- **Access JupyterLab:**  
+  Open http://<your_ip_address>:8888 in your browser.
+- **Login Token:**  
+  Use the configured token (default: `token123`).
+
+To **stop** the container:
+```sh
+sudo docker compose down
+```
+
+---
+
+## 🔄 Staying Up to Date
+
+To keep your local copy updated with the latest changes from the original repository:
+
+1. **Add the original repo as a remote (if not already):**
+   ```sh
+   git remote add upstream https://github.com/NKI-RT/DecideDocker.git
+   ```
+2. **Fetch the latest changes:**
+   ```sh
+   git fetch upstream
+   ```
+3. **Rebase your local changes on top of the latest upstream changes:**
+   ```sh
+   git rebase upstream/main
+   ```
+   *(Replace `main` with the default branch name if different.)*
+
+> **Tip:**  
+> If you encounter conflicts during rebase, Git will prompt you to resolve them.
+
+---
+
+## 📢 Updates
+
+We will release more features and scripts/notebooks as the project progresses.  
+**Stay tuned and keep your local copy up to date!**
 
 ---
 
@@ -50,8 +84,8 @@ DecideDocker/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── startup.sh
-├── .env (default.env)
 ├── workspace/
+│   ├── .env (default.env)
 │   ├── decide/
 │   │   ├── config/
 │   │   │   ├── config_total_segmentator.yaml
