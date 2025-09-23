@@ -46,12 +46,57 @@ sudo docker compose down
 ```
 
 ---
+## ☁️ Cloud Compute Deployment (ARGOS-1 Architecture)
 
+If you're using **cloud computing** and your **virtual machine's IP address is not public**, follow these steps to deploy **XNAT** and **Decide** together using a shared proxy network.
+
+### 📦 Setup Instructions
+
+1. **Stop the existing XNAT container**:
+   ```sh
+   cd xnat-docker-compose
+   ```
+   ```sh
+   sudo docker compose down
+   ```
+   
+2. **Download this repository** into the same directory.:
+   ```sh
+   git clone https://github.com/NKI-RT/DecideDocker.git
+   ```
+
+3. **Copy the cloud compute Docker Compose file**:
+   ```sh
+   cp DecideDocker/docker-compose-cloudcompute.yml ./
+   ```
+
+4. **Run the integrated deployment**:
+   ```sh
+   sudo docker compose -f docker-compose-cloudcompute.yml up -d
+   ```
+
+5. **To stop the deployment**:
+   ```sh
+   sudo docker compose -f docker-compose-cloudcompute.yml down
+   ```
+
+---
+
+### 🔗 Notes
+
+- This setup runs **XNAT**, **Decide**, and **NGINX** in a shared `proxynet` Docker network.
+- Ensure your `.env` file is properly configured and placed in the same directory.
+- The container will expose:
+  - **XNAT** on port `8104`
+  - **JupyterLab (Decide)** on port `8888`
+  - **NGINX proxy** on port `80`
+
+---
 ## 🔄 Staying Up to Date
 
 To keep your local copy updated with the latest changes from the original repository:
 
-1. **Add the original repo as a remote (if not already):**
+1. **Add the original repo as a remote (if not already) (This is for DecideDocker):**
    ```sh
    git remote add upstream https://github.com/NKI-RT/DecideDocker.git
    ```
