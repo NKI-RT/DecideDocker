@@ -27,10 +27,6 @@ Use one of the following commands (depending on your Docker version):
 ```sh
 sudo docker compose up -d
 ```
-```sh
-# or (for older versions)
-sudo docker-compose up -d
-```
 
 > 🔄 **Note:**  
 > The container will perform runtime installations and builds via the `startup.sh` script. This may take a few minutes.
@@ -128,6 +124,7 @@ We will release more features and scripts/notebooks as the project progresses.
 DecideDocker/
 ├── Dockerfile
 ├── docker-compose.yml
+├── docker-compose-cloudcompute.yml
 ├── startup.sh
 ├── workspace/
 │   ├── .env (default.env)
