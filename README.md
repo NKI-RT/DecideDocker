@@ -22,8 +22,6 @@ This repository contains scripts and configuration files to build and run a Dock
 
 ### 2. Run the Container
 
-Use one of the following commands (depending on your Docker version):
-
 ```sh
 sudo docker compose up -d
 ```
