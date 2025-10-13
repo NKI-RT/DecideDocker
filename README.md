@@ -141,7 +141,8 @@ DecideDocker/
 │   │   └── pyproject.toml
 │   ├── notebooks/
 │   │   ├── 001_test_essentials.ipynb
-│   |   └── 002_get_nifti.ipynb
+│   │   ├── 002_get_nifti.ipynb
+│   |   └── 002_get_niftiv2.ipynb
 │   └── scripts/
 │       └── get_nifti.py
 └── nnUNet/
