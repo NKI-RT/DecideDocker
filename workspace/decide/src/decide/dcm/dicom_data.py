@@ -233,7 +233,7 @@ class DICOMData:
         :return Optional[Dict]: Interested metadata of a DICOM File.
         """
         try:
-            dicom = pydicom.dcmread(file_path, stop_before_pixels=True)
+            dicom = pydicom.dcmread(file_path, stop_before_pixels=True, force=True)
             patient_id = str(getattr(dicom, "PatientID", "Unknown"))
             study_uid = str(getattr(dicom, "StudyInstanceUID", "Unknown"))
             series_uid = str(getattr(dicom, "SeriesInstanceUID", "Unknown"))
