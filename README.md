@@ -86,26 +86,33 @@ If you're using **cloud computing** and your **virtual machine's IP address is n
   - **NGINX proxy** on port `80`
 
 ---
-## 🔄 Staying Up to Date
 
-To keep your local copy updated with the latest changes from the original repository:
+## 🔄 Staying Up to Date (Force Sync with Upstream)
 
-1. **Add the original repo as a remote (if not already) (This is for DecideDocker):**
+To update your local copy with the latest changes from the original repository and **discard any local changes**:
+
+1. **Add the original repo as a remote (if not already):**
    ```sh
    git remote add upstream https://github.com/NKI-RT/DecideDocker.git
    ```
-2. **Fetch the latest changes:**
+
+2. **Fetch the latest changes from upstream:**
    ```sh
    git fetch upstream
    ```
-3. **Rebase your local changes on top of the latest upstream changes:**
-   ```sh
-   git rebase upstream/main
-   ```
-   *(Replace `main` with the default branch name if different.)*
 
-> **Tip:**  
-> If you encounter conflicts during rebase, Git will prompt you to resolve them.
+3. **Reset your local `main` branch to match `upstream/main`:**
+   ```sh
+   git checkout main
+   git reset --hard upstream/main
+   ```
+
+4. *(Optional)* **Clean up untracked files and directories:**
+   ```sh
+   git clean -fd
+   ```
+
+> ⚠️ **Warning:** This will permanently discard all local changes, including uncommitted edits and untracked files.
 
 ---
 
