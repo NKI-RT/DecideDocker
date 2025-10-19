@@ -46,11 +46,13 @@ If you're using **cloud computing** and your **virtual machine's IP address is n
 
 ### 📦 Setup Instructions
 
-1. **Stop the existing XNAT container**:
+1. **Stop the existing XNAT container (of ARGOS-1)**:
    ```sh
+   # in ARGOS-1
    cd xnat-docker-compose
    ```
    ```sh
+   # stop the XNAT
    sudo docker compose down
    ```
    
@@ -74,16 +76,16 @@ If you're using **cloud computing** and your **virtual machine's IP address is n
    sudo docker compose -f docker-compose-cloudcompute.yml down
    ```
 
+> **Congratulations! You can now access your XNAT at: `http://xnat-nginx:80`**
+
 ---
 
 ### 🔗 Notes
 
 - This setup runs **XNAT**, **Decide**, and **NGINX** in a shared `proxynet` Docker network.
-- Ensure your `.env` file is properly configured and placed in the same directory.
 - The container will expose:
-  - **XNAT** on port `8104`
   - **JupyterLab (Decide)** on port `8888`
-  - **NGINX proxy** on port `80`
+  - **XNAT NGINX proxy** on port `80`
 
 ---
 
