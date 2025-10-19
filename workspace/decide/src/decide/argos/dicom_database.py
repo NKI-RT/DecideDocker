@@ -52,7 +52,7 @@ class DicomDatabase:
         """Returns number of patients in this DicomDatabse object."""
         return len(self.patient)
 
-    def get_patient(self, patient_id: str)->Patient:
+    def get_patient(self, patient_id: str) -> Patient:
         """Get the patient object given Patient ID.
 
         :param str patient_id: Patient ID
