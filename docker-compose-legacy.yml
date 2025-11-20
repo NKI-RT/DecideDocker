@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  mytools:
+    container_name: mytools
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ipc: host
+    ports:
+      - "8888:8888"
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - JUPYTER_TOKEN=token123
+    volumes:
+      - ./workspace/:/workspace
+    networks:
+      - decide-network
+
+networks:
+  decide-network:
+    name: decide-network

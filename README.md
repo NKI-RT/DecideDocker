@@ -6,6 +6,12 @@ This repository contains scripts and configuration files to build and run a Dock
 
 ## 🚀 Getting Started
 
+***
+
+>NB:
+>If you are using **cloud computing** and **port forwarding**, please refer to:  
+[Cloud Compute Deployment (In ARGOS-1 directory for XNAT)](#%EF%B8%8F-cloud-compute-deployment-in-argos-1-directory-for-xnat) for additional setup instructions.
+
 ### 1. Setup
 
 - **Clone** the repository to your machine:
@@ -20,7 +26,10 @@ This repository contains scripts and configuration files to build and run a Dock
   - Edit the `workspace/.env` file (make sure hidden files are visible).
   - Or, rename `default.env` to `.env`.
 
-### 2. Run the Container
+
+## 2. Run the Container
+
+Start the container using **Docker Compose**:
 
 ```sh
 sudo docker compose up -d
@@ -29,18 +38,46 @@ sudo docker compose up -d
 > 🔄 **Note:**  
 > The container will perform runtime installations and builds via the `startup.sh` script. This may take a few minutes.
 
-- **Access JupyterLab:**  
-  Open http://<your_ip_address>:8888 in your browser.
-- **Login Token:**  
-  Use the configured token (default: `token123`).
+***
 
-To **stop** the container:
+### ✅ Access JupyterLab
+
+*   **URL:**  
+    Open `http://<your_ip_address>:8888` in your browser.
+*   **Login Token:**  
+    Use the configured token (default: `token123`).
+
+***
+
+### ⏹ Stop the Container
+
+To stop the container:
+
 ```sh
 sudo docker compose down
 ```
 
+***
+
+### 🕰 Legacy Docker Compose (Standalone Tool)
+
+For environments using the **deprecated** standalone `docker-compose` tool, use:
+
+Start:
+
+```sh
+sudo docker-compose -f docker-compose-legacy.yml up -d
+```
+
+Stop:
+
+```sh
+sudo docker-compose -f docker-compose-legacy.yml down
+```
+
+
 ---
-## ☁️ Cloud Compute Deployment (ARGOS-1 Architecture)
+## ☁️ Cloud Compute Deployment (In ARGOS-1 dir. for the XNAT)
 
 If you're using **cloud computing** and your **virtual machine's IP address is not public**, follow these steps to deploy **XNAT** and **Decide** together using a shared proxy network.
 
@@ -131,6 +168,7 @@ We will release more features and scripts/notebooks as the project progresses.
 DecideDocker/
 ├── Dockerfile
 ├── docker-compose.yml
+├── docker-compose-legacy.yml
 ├── docker-compose-cloudcompute.yml
 ├── startup.sh
 ├── workspace/
