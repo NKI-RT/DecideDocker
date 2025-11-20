@@ -10,7 +10,7 @@ This repository contains scripts and configuration files to build and run a Dock
 
 >NB:
 >If you are using **cloud computing** and **port forwarding**, please refer to:  
-[Cloud Compute Deployment (In ARGOS-1 directory for XNAT)](#%EF%B8%8F-cloud-compute-deployment-in-argos-1-directory-for-xnat) for additional setup instructions.
+[Cloud Compute Deployment (In ARGOS-1 directory for XNAT)](https://github.com/NKI-RT/DecideDocker?tab=readme-ov-file#%EF%B8%8F-cloud-compute-deployment-in-argos-1-dir-for-the-xnat) for additional setup instructions.
 
 ### 1. Setup
 
